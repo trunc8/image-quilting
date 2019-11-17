@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 // import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { Crop } from '@ionic-native/crop/ngx';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-texture-transfer',
@@ -26,7 +27,7 @@ export class TextureTransferPage implements OnInit {
 
   transferInProgress = false;
 
-  constructor(private crop: Crop, private camera: Camera, public actionSheetController: ActionSheetController, private file: File, private toastController: ToastController) { }
+  constructor(private router:Router, private crop: Crop, private camera: Camera, public actionSheetController: ActionSheetController, private file: File, private toastController: ToastController) { }
 
   ngOnInit() {
   }
@@ -124,13 +125,19 @@ export class TextureTransferPage implements OnInit {
     });
   }
 
-  submit() {
+  async submit() {
     this.presentToast("Transfering Texture. Please wait...");
     this.transferInProgress = true;
 
     // Now send the image to backend & wait for result.
-    waits(2000);
+    await this.delay(2000);
+    this.transferInProgress = false;
     // On obtaining result, go to result page
+    this.router.navigate(['/result', this.textureImg.croppedImagepath])
 
+  }
+
+  delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
   }
 }

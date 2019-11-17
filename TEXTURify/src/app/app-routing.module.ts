@@ -22,6 +22,10 @@ const routes: Routes = [
   {
     path: 'texture-transfer',
     loadChildren: () => import('./pages/texture-transfer/texture-transfer.module').then( m => m.TextureTransferPageModule)
+  },
+  {
+    path: 'result/:img_path',
+    loadChildren: () => import('./pages/result/result.module').then( m => m.ResultPageModule)
   }
 ];
 

@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      <b>TEXTURify Results</b>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>Here's what we have got for you!</ion-card-subtitle>
+      <ion-card-title>TEXTURify Results</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <img [src]="resultImagePath" *ngIf="resultImagepath"/>
+      <br>
+
+      <p align="center"><ion-button color="dark" (click)="saveImage()">Save Image</ion-button><ion-button color="dark" (click)="tryAgain()">Try Again?</ion-button></p>
+      <br>
+      <p *ngIf="savingInProgress" align="center"><ion-spinner name="circles" color="dark"></ion-spinner></p>
+    </ion-card-content>
+  </ion-card>
+<ion-content>
+
+</ion-content>

@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 // import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { Crop } from '@ionic-native/crop/ngx';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
+import { Router } from '@angular/router';
 // import { Storage } from '@ionic/storage';
 // import { FilePath } from '@ionic-native/file-path/ngx';
 // import { ImagePicker } from '@ionic-native/image-picker';
@@ -34,7 +35,7 @@ export class TextureSynthesisPage implements OnInit {
   };
 
 
-  constructor(private crop: Crop, private camera: Camera, public actionSheetController: ActionSheetController, private file: File, private toastController: ToastController) { }
+  constructor(private router:Router, private crop: Crop, private camera: Camera, public actionSheetController: ActionSheetController, private file: File, private toastController: ToastController) { }
 
   ngOnInit() {
   }
@@ -151,12 +152,19 @@ export class TextureSynthesisPage implements OnInit {
     this.targetImgOptions.tolerance = parseFloat(e.detail.value);
   }
 
-  submit() {
+  async submit() {
     this.presentToast("Generating Texture. Please wait...");
     this.synthesisInProgress = true;
-    // Now send the image to backend & wait for result.
 
+    // Now send the image to backend & wait for result.
+    await this.delay(2000);
+    this.synthesisInProgress = false;
     // On obtaining result, go to result page
+    this.router.navigate(['/result', this.croppedImagepath])
+  }
+
+  delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
   }
 
 }

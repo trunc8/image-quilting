@@ -17,8 +17,6 @@
     </ion-card-header>
 
     <ion-card-content>
-      <!--<ion-label id="texture_label" color="primary" stacked>Upload Sample Texture</ion-label>
-      <ion-input type="file" accept="image/*" (ionChange)="imageFilePath_change($event)"></ion-input>-->
       <ion-button expand="block" color="dark" (click)="selectImage('texture')">Upload Texture Image</ion-button>
       <br>
       <img [src]="textureImg.croppedImagepath" *ngIf="textureImg.croppedImagepath"/>
@@ -27,42 +25,9 @@
       <br>
       <img [src]="targetImg.croppedImagepath" *ngIf="targetImg.croppedImagepath"/>
       <br>
-      <ion-button expand="block" *ngIf="targetImg.croppedImagepath && textureImg.croppedImagepath" color="dark" (click)="submit()">Transfer Texture <ion-icon name="shuffle"></ion-icon></ion-button>
-
+      <ion-button expand="block" *ngIf="targetImg.croppedImagepath && textureImg.croppedImagepath" color="dark" (click)="submit()">Transfer Texture   &nbsp;&nbsp;<ion-icon name="shuffle"></ion-icon></ion-button>
+      <br>
       <p *ngIf="transferInProgress" align="center"><ion-spinner name="circles" color="dark"></ion-spinner></p>
-      <!--<div *ngIf="croppedImagepath.length">
-        <img [src]="croppedImagepath" />
-        <br>
-        <h2 align="center">Target Image Dimensions</h2>
-        <ion-input type="number" placeholder="Target Image Height" (ionChange)="heightChanged($event)"></ion-input>
-        <br>
-        <ion-input type="number" placeholder="Target Image Height" (ionChange)="widthChanged($event)"></ion-input>
-
-        <br>
-
-        <span><h2 align="center">Show Advanced Options <ion-icon *ngIf="!showAdvanced" name="arrow-dropdown-circle" (click)="setShowAdvanced(true)"></ion-icon> <ion-icon *ngIf="showAdvanced" name="arrow-dropup-circle" (click)="setShowAdvanced(false)"></ion-icon></h2></span>
-        <div *ngIf="showAdvanced">
-          <ion-item>
-            <ion-label position="stacked">Block Size</ion-label>
-            <ion-input type="number" value="10" (ionChange)="blockSizeChanged($event)"></ion-input>
-          </ion-item>
-          <br>
-          <ion-item>
-            <ion-label position="stacked">Overlap Size</ion-label>
-            <ion-input type="number" value="5" (ionChange)="overlapSizeChanged($event)"></ion-input>
-          </ion-item>
-          <br>
-          <ion-item>
-            <ion-label position="stacked">Tolerance</ion-label>
-            <ion-input type="number" value="0.1" (ionChange)="toleranceChanged($event)"></ion-input>
-          </ion-item>
-          
-          <br>
-          
-        </div>
-        <br>
-        <ion-button expand="block" color="dark" (click)="submit()">Generate Texture</ion-button>
-      </div>-->
     </ion-card-content>
   </ion-card>
 </ion-content>
