@@ -1,0 +1,59 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      <b>Texture Synthesis</b>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>Texture Generation from a Sample Image</ion-card-subtitle>
+      <ion-card-title>Texture Synthesis</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <!--<ion-label id="texture_label" color="primary" stacked>Upload Sample Texture</ion-label>
+      <ion-input type="file" accept="image/*" (ionChange)="imageFilePath_change($event)"></ion-input>-->
+      <ion-button expand="block" color="dark" (click)="selectImage()">Upload Sample Texture</ion-button>
+      <br>
+      <div *ngIf="croppedImagepath.length">
+        <img [src]="croppedImagepath" />
+        <br>
+        <h2 align="center">Target Image Dimensions</h2>
+        <ion-input type="number" placeholder="Target Image Height" (ionChange)="heightChanged($event)"></ion-input>
+        <br>
+        <ion-input type="number" placeholder="Target Image Height" (ionChange)="widthChanged($event)"></ion-input>
+
+        <br>
+
+        <span><h2 align="center">Show Advanced Options <ion-icon *ngIf="!showAdvanced" name="arrow-dropdown-circle" (click)="setShowAdvanced(true)"></ion-icon> <ion-icon *ngIf="showAdvanced" name="arrow-dropup-circle" (click)="setShowAdvanced(false)"></ion-icon></h2></span>
+        <div *ngIf="showAdvanced">
+          <ion-item>
+            <ion-label position="stacked">Block Size</ion-label>
+            <ion-input type="number" value="10" (ionChange)="blockSizeChanged($event)"></ion-input>
+          </ion-item>
+          <br>
+          <ion-item>
+            <ion-label position="stacked">Overlap Size</ion-label>
+            <ion-input type="number" value="5" (ionChange)="overlapSizeChanged($event)"></ion-input>
+          </ion-item>
+          <br>
+          <ion-item>
+            <ion-label position="stacked">Tolerance</ion-label>
+            <ion-input type="number" value="0.1" (ionChange)="toleranceChanged($event)"></ion-input>
+          </ion-item>
+          
+          <br>
+          
+        </div>
+        <br>
+        <ion-button expand="block" color="dark" (click)="submit()">Generate Texture</ion-button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
