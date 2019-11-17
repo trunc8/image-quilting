@@ -21,8 +21,9 @@ export class TextureSynthesisPage implements OnInit {
   // imageResponse: any = [];
   isLoading = false;
   options: any;
-  croppedImagepath: any = "a";
+  croppedImagepath: any = "";
   showAdvanced = false;
+  synthesisInProgress = false;
 
   targetImgOptions = {
     height: 1000,
@@ -93,7 +94,7 @@ export class TextureSynthesisPage implements OnInit {
   }
 
   cropImage(fileUrl) {
-    this.crop.crop(fileUrl, { quality: 50 })
+    this.crop.crop(fileUrl, { quality: 90 })
       .then(
         newPath => {
           this.showCroppedImage(newPath.split('?')[0])
@@ -151,17 +152,11 @@ export class TextureSynthesisPage implements OnInit {
   }
 
   submit() {
-    console.log("subitting image for texture generation");
+    this.presentToast("Generating Texture. Please wait...");
+    this.synthesisInProgress = true;
+    // Now send the image to backend & wait for result.
+
+    // On obtaining result, go to result page
   }
-    // this.imagePicker.getPictures(this.options).then((results) => {
-    //   for (var i = 0; i < results.length; i++) {
-    //     this.imageResponse.push('data:image/jpeg;base64,' + results[i]);
-    //     this.presentToast(this.imageResponse[i]);
-    //   }
-    // }, (err) => {
-    //   console.log(err);
-    //   this.presentToast(err);
-    // });
-  // }
 
 }

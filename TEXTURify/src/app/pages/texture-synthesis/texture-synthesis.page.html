@@ -52,7 +52,8 @@
           
         </div>
         <br>
-        <ion-button expand="block" color="dark" (click)="submit()">Generate Texture</ion-button>
+        <ion-button expand="block" color="dark" (click)="submit()">Generate Texture <ion-icon name="color-palette"></ion-icon></ion-button>
+        <p *ngIf="synthesisInProgress" align="center"><ion-spinner name="circles" color="dark"></ion-spinner></p>
       </div>
     </ion-card-content>
   </ion-card>
