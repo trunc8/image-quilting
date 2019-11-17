@@ -115,7 +115,7 @@ export class TextureSynthesisPage implements OnInit {
 
     this.file.readAsDataURL(filePath, imageName).then(base64 => {
       this.croppedImagepath = base64;
-      this.presentToast(this.croppedImagepath);
+      // this.presentToast(this.croppedImagepath);
       this.isLoading = false;
     }, error => {
       alert('Error in showing image' + error);
@@ -153,7 +153,7 @@ export class TextureSynthesisPage implements OnInit {
   }
 
   async submit() {
-    this.presentToast("Generating Texture. Please wait...");
+    // this.presentToast("Generating Texture. Please wait...");
     this.synthesisInProgress = true;
 
     // Now send the image to backend & wait for result.

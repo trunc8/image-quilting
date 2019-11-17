@@ -9,7 +9,7 @@ import { ActionSheetController, ToastController, Platform, LoadingController } f
 })
 export class ResultPage implements OnInit {
 
-  resultImagePath = null;
+  resultImagePath= "";
   savingInProgress = false;
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute, private toastController: ToastController) { }
@@ -31,7 +31,7 @@ export class ResultPage implements OnInit {
   async saveImage() {
     // Save Image
     this.savingInProgress = true;
-    this.presentToast("Saving Image. Please wait...");
+    // this.presentToast("Saving Image. Please wait...");
     
 
     // Now send the image to backend & wait for result.

@@ -27,7 +27,7 @@
       <br>
       <ion-button expand="block" *ngIf="targetImg.croppedImagepath && textureImg.croppedImagepath" color="dark" (click)="submit()">Transfer Texture   &nbsp;&nbsp;<ion-icon name="shuffle"></ion-icon></ion-button>
       <br>
-      <p *ngIf="transferInProgress" align="center"><ion-spinner name="circles" color="dark"></ion-spinner></p>
+      <p *ngIf="transferInProgress" align="center"><ion-spinner name="circles" color="dark"></ion-spinner> &nbsp;&nbsp; Transferring Texture. Please wait...</p>
     </ion-card-content>
   </ion-card>
 </ion-content>

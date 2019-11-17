@@ -15,12 +15,12 @@
     </ion-card-header>
 
     <ion-card-content>
-      <img [src]="resultImagePath" *ngIf="resultImagepath"/>
+      <img [src]="resultImagePath" *ngIf="resultImagePath"/>
       <br>
 
       <p align="center"><ion-button color="dark" (click)="saveImage()">Save Image</ion-button><ion-button color="dark" (click)="tryAgain()">Try Again?</ion-button></p>
       <br>
-      <p *ngIf="savingInProgress" align="center"><ion-spinner name="circles" color="dark"></ion-spinner></p>
+      <p *ngIf="savingInProgress" align="center"><ion-spinner name="circles" color="dark"></ion-spinner> &nbsp;&nbsp; Saving Image. Please wait...</p>
     </ion-card-content>
   </ion-card>
 <ion-content>

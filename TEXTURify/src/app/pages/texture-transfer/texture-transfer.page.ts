@@ -109,15 +109,15 @@ export class TextureTransferPage implements OnInit {
     this.file.readAsDataURL(filePath, imageName).then(base64 => {
       if(imgType === "texture"){
         this.textureImg.croppedImagepath = base64;
-        this.presentToast(this.textureImg.croppedImagepath);
+        // this.presentToast(this.textureImg.croppedImagepath);
       }
       if(imgType === "target"){
         this.targetImg.croppedImagepath = base64;
-        this.presentToast(this.targetImg.croppedImagepath);
+        // this.presentToast(this.targetImg.croppedImagepath);
       }
-      else{
-        this.presentToast("Invalid Image Type!");
-      }
+      // else{
+      //   this.presentToast("Invalid Image Type!");
+      // }
       this.isLoading = false;
     }, error => {
       alert('Error in showing image' + error);
@@ -126,7 +126,7 @@ export class TextureTransferPage implements OnInit {
   }
 
   async submit() {
-    this.presentToast("Transfering Texture. Please wait...");
+    // this.presentToast("Transfering Texture. Please wait...");
     this.transferInProgress = true;
 
     // Now send the image to backend & wait for result.
