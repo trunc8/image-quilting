@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      <b>Texture Transfer</b>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>Transfer Desired Texture onto a Target Image</ion-card-subtitle>
+      <ion-card-title>Texture Transfer</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-button expand="block" color="dark" (click)="selectImage('texture')">Upload Texture Image</ion-button>
+      <br>
+      <img [src]="textureImg.croppedImagepath" *ngIf="textureImg.croppedImagepath"/>
+      <br *ngIf="textureImg.croppedImagepath">
+      <ion-button expand="block" color="dark" (click)="selectImage('target')">Upload Target Image</ion-button>
+      <br>
+      <img [src]="targetImg.croppedImagepath" *ngIf="targetImg.croppedImagepath"/>
+      <br>
+      <ion-button expand="block" *ngIf="targetImg.croppedImagepath && textureImg.croppedImagepath" color="dark" (click)="submit()">Transfer Texture   &nbsp;&nbsp;<ion-icon name="shuffle"></ion-icon></ion-button>
+      <br>
+      <p *ngIf="transferInProgress" align="center"><ion-spinner name="circles" color="dark"></ion-spinner> &nbsp;&nbsp; Transferring Texture. Please wait...</p>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
