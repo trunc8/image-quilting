@@ -55,7 +55,7 @@ export class TextureSynthesisPage implements OnInit {
 
 
 
-  constructor(private afs: AngularFirestore, private storage: AngularFireStorage, private router:Router, private crop: Crop, private camera: Camera, public actionSheetController: ActionSheetController, private file: File, private toastController: ToastController) { }
+  constructor(private http: HttpClient, private afs: AngularFirestore, private storage: AngularFireStorage, private router:Router, public actionSheetController: ActionSheetController, private toastController: ToastController) { }
 
   ngOnInit() {
   }
@@ -152,18 +152,30 @@ export class TextureSynthesisPage implements OnInit {
     // this.presentToast("Generating Texture. Please wait...");
     // this.status = "Uploading image to firebase...";
     this.synthesisInProgress = true;
-    
+    let post_data = {
+      "img_url": this.image.image_url,
+      "scale": this.targetImgOptions.scale,
+      "blockSize": this.targetImgOptions.blockSize,
+      "overlapSize": this.targetImgOptions.overlapSize,
+      "tolerance": this.targetImgOptions.tolerance
+    };
+
+    // Change URL accordingly
+    let url = "http://localhost:8000/texture_synthesis/"
 
     // Now send the image to backend & wait for result.
     this.status = "Generating new texture. Please wait..."
-    await this.delay(2000);
-    this.synthesisInProgress = false;
-    // // On obtaining result, go to result page
-    this.router.navigate(['/result', this.imgDataLocal.croppedImagepath])
+    this.http.post(url, JSON.stringify(post_data)).subscribe((response) => {
+      console.log(response);
+      // On obtaining result, go to result page
+      this.synthesisInProgress = false;
+      this.router.navigate(['/result', response])
+    });
+    // await this.delay(2000);
   }
 
-  delay(ms: number) {
-    return new Promise( resolve => setTimeout(resolve, ms) );
-  }
+  // delay(ms: number) {
+  //   return new Promise( resolve => setTimeout(resolve, ms) );
+  // }
 
 }

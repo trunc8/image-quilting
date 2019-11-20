@@ -61,7 +61,7 @@ export class TextureTransferPage implements OnInit {
 
   status = "";
 
-  constructor(private afs: AngularFirestore, private storage: AngularFireStorage, private router:Router, private crop: Crop, private camera: Camera, public actionSheetController: ActionSheetController, private file: File, private toastController: ToastController) { }
+  constructor(private http: HttpClient, private afs: AngularFirestore, private storage: AngularFireStorage, private router:Router, private crop: Crop, private camera: Camera, public actionSheetController: ActionSheetController, private file: File, private toastController: ToastController) { }
 
   ngOnInit() {
   }
@@ -173,10 +173,29 @@ export class TextureTransferPage implements OnInit {
 
     // Now send the image to backend & wait for result.
     this.status = "Transferring texture. Please wait..."
-    await this.delay(2000);
-    this.transferInProgress = false;
-    // On obtaining result, go to result page
-    this.router.navigate(['/result', this.textureImage.image_url])
+    let post_data = {
+      "texture_img_url": this.textureImage.image_url,
+      "target_img_url": this.targetImage.image_url,
+      "blockSize": this.targetImgOptions.blockSize,
+      "overlapSize": this.targetImgOptions.overlapSize,
+      "tolerance": this.targetImgOptions.tolerance
+    };
+
+    // Change URL accordingly
+    let url = "http://localhost:8000/texture_transfer/"
+
+    // Now send the image to backend & wait for result.
+    this.status = "Generating new texture. Please wait..."
+    this.http.post(url, JSON.stringify(post_data)).subscribe((response) => {
+      console.log(response);
+      // On obtaining result, go to result page
+      this.transferInProgress = false;
+      this.router.navigate(['/result', response])
+    });
+    // await this.delay(2000);
+    // this.transferInProgress = false;
+    // // On obtaining result, go to result page
+    // this.router.navigate(['/result', this.textureImage.image_url])
 
   }
 
