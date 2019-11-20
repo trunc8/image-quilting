@@ -96,5 +96,5 @@ def minimumCostMask(Ref, B1, B2, overlap_type, overlap_size):
 
 # Uncomment below lines to run this as stand-alone file
 
-# arr = np.random.rand(15,15)
-# print(minimumCostMask(arr, arr, arr, 'b', 7))
+#arr = np.random.rand(15,15)
+#print(minimumCostMask(arr, arr, arr, 'b', 7))

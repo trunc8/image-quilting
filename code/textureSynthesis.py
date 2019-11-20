@@ -1,5 +1,6 @@
 import numpy as np
 from PIL import Image
+from minimumCostPathFunc import minimumCostMask 
 
 def Construct(imgArray, blockSize, overlapSize, outSizeX, outSizeY):
     imgArray = np.array(imgArray)
@@ -15,8 +16,8 @@ def Construct(imgArray, blockSize, overlapSize, outSizeX, outSizeY):
     finalImage[0:blockSize[0],0:blockSize[1],:] = imgArray[0:blockSize[0],0:blockSize[1],:]
     noOfBlocksInRow = 2 + np.ceil((outSizeX - 2*(blockSize[1] - overlapSize))/(blockSize[1] - 2*overlapSize))
     noOfBlocksInCol = 2 + np.ceil((outSizeY - 2*(blockSize[0] - overlapSize))/(blockSize[0] - 2*overlapSize))
-    for i in range(int(noOfBlocksInRow)):
-        for j in range(int(noOfBlocksInCol)):
+    for i in range(int(noOfBlocksInRow)-1):
+        for j in range(int(noOfBlocksInCol)-1):
             if i == 0 and j == 0:
                 continue
             #start and end location of block to be filled is initialised
@@ -27,15 +28,27 @@ def Construct(imgArray, blockSize, overlapSize, outSizeX, outSizeY):
             toFill = finalImage[startX:endX,startY:endY,:]
             #MatchBlock returns the best suited block
             matchBlock = MatchBlock(blocks, toFill, blockSize)
-            if i == 0:          
+            B1EndY = startY+overlapSize-1
+            B1StartY = B1EndY-(matchBlock.shape[1])+1
+            B1EndX = startX+overlapSize-1
+            B1StartX = B1EndX-(matchBlock.shape[0])+1
+            if i == 0:      
                 overlapType = 'v'
-                finalImage[startX:endX,startY:endY,:] = matchBlock
+                B1 = finalImage[startX:endX,B1StartY:B1EndY+1,:]
+                mask = minimumCostMask(matchBlock[:,:,0],B1[:,:,0],0,overlapType,overlapSize)
             elif j == 0:          
                 overlapType = 'h'
-                finalImage[startX:endX,startY:endY,:] = matchBlock
+                B2 = finalImage[B1StartX:B1EndX+1, startY:endY, :]
+                mask = minimumCostMask(matchBlock[:,:,0],0,B2[:,:,0],overlapType,overlapSize)
             else:
                 overlapType = 'b'
-                finalImage[startX:endX,startY:endY,:] = matchBlock
+                B1 = finalImage[startX:endX,B1StartY:B1EndY+1,:]
+                B2 = finalImage[B1StartX:B1EndX+1, startY:endY, :]
+                mask = minimumCostMask(matchBlock[:,:,0],B1[:,:,0],B2[:,:,0],overlapType,overlapSize)
+            mask = np.repeat(np.expand_dims(mask,axis=2),3,axis=2)
+            maskNegate = mask==0
+            finalImage[startX:endX,startY:endY,:] = maskNegate*finalImage[startX:endX,startY:endY,:]
+            finalImage[startX:endX,startY:endY,:] = matchBlock*mask+finalImage[startX:endX,startY:endY,:]
     return finalImage
 
 def SSDError(Bi, toFill): 
@@ -69,7 +82,7 @@ def SaveImage( npdata, outfilename ) :
 data = LoadImage('t8.png')
 data = np.array(data)
 print(data.shape)
-out = Construct(data, [100,100], 20, 400, 100)
+out = Construct(data, [100,100], 20, 400, 400)
 SaveImage(out,'out.png')
 
 
