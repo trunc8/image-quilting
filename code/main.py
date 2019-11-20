@@ -33,5 +33,6 @@ if __name__ == "__main__":
 
     # Save generated image if required
     # if args.save:
+    img_name = args.img_path.split("/")[-1]
     img_to_save = Image.fromarray(new_img.astype('uint8'), 'RGB')
-    img_to_save.save("output.png")
+    img_to_save.save("../results/synthesis/" + img_name + "_b=" + str(args.block_size) + "_o=" + str(args.overlap) + ".png")

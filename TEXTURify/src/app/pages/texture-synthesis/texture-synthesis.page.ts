@@ -8,6 +8,7 @@ import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireStorage} from '@angular/fire/storage';
+import { stringify } from '@angular/compiler/src/util';
 // import { Storage } from '@ionic/storage';
 // import { FilePath } from '@ionic-native/file-path/ngx';
 // import { ImagePicker } from '@ionic-native/image-picker';
@@ -161,7 +162,7 @@ export class TextureSynthesisPage implements OnInit {
     };
 
     // Change URL accordingly
-    let url = "http://localhost:8000/texture_synthesis/"
+    const url = "http://localhost:8000/texture_synthesis/";
 
     // Now send the image to backend & wait for result.
     this.status = "Generating new texture. Please wait..."
@@ -170,6 +171,10 @@ export class TextureSynthesisPage implements OnInit {
       // On obtaining result, go to result page
       this.synthesisInProgress = false;
       this.router.navigate(['/result', response])
+    }, (error)=> {
+      this.presentToast(stringify(error));
+      console.log(error);
+      this.synthesisInProgress=false;
     });
     // await this.delay(2000);
   }

@@ -6,9 +6,10 @@ from minimumCostPathFunc import minimumCostMask
 def Construct(textureImgArray, targetImgArray, blockSize, overlapSize, alpha):
     textureImgArray = np.array(textureImgArray)
     targetImgArray = np.array(targetImgArray)
+    print(textureImgArray.shape, targetImgArray.shape)
+    outSizeX = targetImgArray.shape[0]
+    outSizeY = targetImgArray.shape[1]
     [m,n,c] = textureImgArray.shape
-    outSizeX = targetImgArray.shape[1]
-    outSizeY = targetImgArray.shape[0]
     blocks = []
     for i in range(m-blockSize[0]):
         for j in range(n-blockSize[1]):
@@ -18,11 +19,10 @@ def Construct(textureImgArray, targetImgArray, blockSize, overlapSize, alpha):
     #final image is initialised with elemnts as -1.
     finalImage = np.ones([outSizeX, outSizeY, c])*-1
     finalImage[0:blockSize[0],0:blockSize[1],:] = textureImgArray[0:blockSize[0],0:blockSize[1],:]
-    noOfBlocksInRow = 2 + np.ceil((outSizeX - 2*(blockSize[1] - overlapSize))/(blockSize[1] - 2*overlapSize))
-    noOfBlocksInCol = 2 + np.ceil((outSizeY - 2*(blockSize[0] - overlapSize))/(blockSize[0] - 2*overlapSize))
-    for i in range(int(noOfBlocksInRow)-1):
-        for j in range(int(noOfBlocksInCol)-1):
-            # print(i, j)
+    noOfBlocksInRow = 1+np.ceil((outSizeX - blockSize[1])*1.0/(blockSize[1] - overlapSize))
+    noOfBlocksInCol = 1+np.ceil((outSizeY - blockSize[0])*1.0/(blockSize[0] - overlapSize))
+    for i in range(int(noOfBlocksInRow)):
+        for j in range(int(noOfBlocksInCol)):
             if i == 0 and j == 0:
                 continue
             #start and end location of block to be filled is initialised
@@ -30,10 +30,23 @@ def Construct(textureImgArray, targetImgArray, blockSize, overlapSize, alpha):
             startY = int(j*(blockSize[1] - overlapSize))
             endX = int(min(startX+blockSize[0],outSizeX))
             endY = int(min(startY+blockSize[1],outSizeY))
+            print(startX, endX, startY, endY)
+
             toFill = finalImage[startX:endX,startY:endY,:]
             targetBlock = targetImgArray[startX:endX,startY:endY,:]
+
+            
+            if targetBlock.shape != blocks.shape[1:]:
+                blocks1 = []
+                for x in range(m - targetBlock.shape[0]):
+                    for y in range(n - targetBlock.shape[1]):
+                        blocks1.append(textureImgArray[x:x+targetBlock.shape[0],y:y+targetBlock.shape[1],:]) 
+                blocks1 = np.array(blocks1)
+                matchBlock = MatchBlock(blocks1, toFill, targetBlock, blockSize, alpha)
+            # print(toFill.shape, targetBlock.shape)
             #MatchBlock returns the best suited block
-            matchBlock = MatchBlock(blocks, toFill, targetBlock, blockSize, alpha)
+            else:
+                matchBlock = MatchBlock(blocks, toFill, targetBlock, blockSize, alpha)
             B1EndY = startY+overlapSize-1
             B1StartY = B1EndY-(matchBlock.shape[1])+1
             B1EndX = startX+overlapSize-1
@@ -41,20 +54,27 @@ def Construct(textureImgArray, targetImgArray, blockSize, overlapSize, alpha):
             if i == 0:      
                 overlapType = 'v'
                 B1 = finalImage[startX:endX,B1StartY:B1EndY+1,:]
+                #print(B1.shape,matchBlock.shape,'v',B1StartY,B1EndY,startX,startY)
                 mask = minimumCostMask(matchBlock[:,:,0],B1[:,:,0],0,overlapType,overlapSize)
             elif j == 0:          
                 overlapType = 'h'
                 B2 = finalImage[B1StartX:B1EndX+1, startY:endY, :]
+                #print(B2.shape,matchBlock.shape,B1StartX,B1EndY)
                 mask = minimumCostMask(matchBlock[:,:,0],0,B2[:,:,0],overlapType,overlapSize)
             else:
                 overlapType = 'b'
                 B1 = finalImage[startX:endX,B1StartY:B1EndY+1,:]
                 B2 = finalImage[B1StartX:B1EndX+1, startY:endY, :]
+                #print(B1.shape,B2.shape,matchBlock.shape)
                 mask = minimumCostMask(matchBlock[:,:,0],B1[:,:,0],B2[:,:,0],overlapType,overlapSize)
             mask = np.repeat(np.expand_dims(mask,axis=2),3,axis=2)
             maskNegate = mask==0
             finalImage[startX:endX,startY:endY,:] = maskNegate*finalImage[startX:endX,startY:endY,:]
             finalImage[startX:endX,startY:endY,:] = matchBlock*mask+finalImage[startX:endX,startY:endY,:]
+            if endY == outSizeY:
+                break
+        if endX == outSizeX:
+            break
     return finalImage
 
 def SSDError(Bi, toFill, targetBlock, alpha): 
@@ -63,7 +83,10 @@ def SSDError(Bi, toFill, targetBlock, alpha):
     Bi = Bi[0:m,0:n,0:p]
     #Locations where toFill+1 gives 0 are those where any data is not stored yet. Only those which give greater than 1 are compared for best fit.
     # print(Bi.shape, toFill.shape, targetBlock.shape)
-    error = (1-alpha)*np.sum(((toFill+0.99)>0.1)*(Bi - toFill)*(Bi - toFill)) + alpha*np.sum(((toFill+0.99)>0.1)*(Bi - targetBlock)*(Bi - targetBlock))
+    lum_Bi = np.sum(Bi, axis = 2)*1.0/3
+    lum_target = np.sum(targetBlock, axis = 2)*1.0/3
+    lum_toFill = np.sum(toFill, axis = 2)*1.0/3
+    error = alpha*np.sqrt(np.sum(((toFill+0.99)>0.1)*(Bi - toFill)*(Bi - toFill))) + (1-alpha)*np.sqrt(np.sum(((lum_toFill+0.99)>0.1)*(lum_Bi - lum_target)*(lum_Bi - lum_target)))
     return [error,Bi]
 
 def MatchBlock(blocks, toFill, targetBlock, blockSize, alpha):
@@ -85,9 +108,9 @@ def SaveImage( npdata, outfilename ) :
     img = Image.fromarray(npdata.astype('uint8')).convert('RGB')
     img.save( outfilename )
 
-texture = np.array(LoadImage('../images/t4.jpg'))
-target = np.array(LoadImage('../images/lincoln.jpg'))
+texture = np.array(LoadImage('../images/scribble_face.jpg'))
+target = np.array(LoadImage('../images/tendulkar.jpg'))
 
 # print(data.shape)
-out = Construct(texture, target, [100,100], 30, 0.5)
+out = Construct(texture, target, [40, 40], 10, 0.15)
 SaveImage(out,'output_transfer.png')

@@ -1,13 +1,14 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActionSheetController, ToastController, Platform, LoadingController } from '@ionic/angular';
 import { File, FileEntry } from '@ionic-native/file/ngx';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient} from '@angular/common/http';
 // import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { Crop } from '@ionic-native/crop/ngx';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireStorage} from '@angular/fire/storage';
+import { headersToString } from 'selenium-webdriver/http';
 
 export interface Image {
   id: string;
@@ -180,6 +181,7 @@ export class TextureTransferPage implements OnInit {
       "overlapSize": this.targetImgOptions.overlapSize,
       "tolerance": this.targetImgOptions.tolerance
     };
+
 
     // Change URL accordingly
     let url = "http://localhost:8000/texture_transfer/"
