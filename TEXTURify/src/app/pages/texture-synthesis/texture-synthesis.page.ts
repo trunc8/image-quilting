@@ -121,7 +121,7 @@ export class TextureSynthesisPage implements OnInit {
 
   scaleChanged(e){
     console.log(parseInt(e.detail.value));
-    this.targetImgOptions.scale = parseInt(e.detail.value);
+    this.targetImgOptions.scale = parseFloat(e.detail.value);
   }
 
   // widthChanged(e){
