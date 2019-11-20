@@ -19,15 +19,25 @@
     <ion-card-content>
       <!--<ion-label id="texture_label" color="primary" stacked>Upload Sample Texture</ion-label>
       <ion-input type="file" accept="image/*" (ionChange)="imageFilePath_change($event)"></ion-input>-->
-      <ion-button expand="block" color="dark" (click)="selectImage()">Upload Sample Texture</ion-button>
+      <div class="uploadbtn">
+        <span class="uploadLabel">Upload Sample Texture: </span>
+        <input
+          id="uploadBtn"
+          type="file"
+          class="upload"
+          (change)="uploadFile($event.target.files)"
+        />
+      </div>
+      <!--<ion-button expand="block" color="dark" (click)="selectImage()">Upload Sample Texture</ion-button>-->
       <br>
-      <div *ngIf="croppedImagepath.length">
-        <img [src]="croppedImagepath" />
+      <p *ngIf="isLoading" align="center"><ion-spinner name="circles" color="dark"></ion-spinner> &nbsp;&nbsp;{{status}}</p>
+      <div *ngIf="image.image_url">
+        <img [src]="image.image_url" />
         <br>
-        <h2 align="center">Target Image Dimensions</h2>
-        <ion-input type="number" placeholder="Target Image Height" (ionChange)="heightChanged($event)"></ion-input>
-        <br>
-        <ion-input type="number" placeholder="Target Image Height" (ionChange)="widthChanged($event)"></ion-input>
+        <h2 align="center">Target Image Size</h2>
+        <ion-input type="number" placeholder="Target Image Scale" (ionChange)="scaleChanged($event)"></ion-input>
+        <!--<br>
+        <ion-input type="number" placeholder="Target Image Height" (ionChange)="widthChanged($event)"></ion-input>-->
 
         <br>
 
@@ -54,8 +64,9 @@
         <br>
         <ion-button expand="block" color="dark" (click)="submit()">Generate Texture &nbsp;&nbsp;<ion-icon name="color-palette"></ion-icon></ion-button>
         <br>
-        <p *ngIf="synthesisInProgress" align="center"><ion-spinner name="circles" color="dark"></ion-spinner> &nbsp;&nbsp; Generating Texture. Please wait...</p>
+        <p *ngIf="synthesisInProgress" align="center"><ion-spinner name="circles" color="dark"></ion-spinner> &nbsp;&nbsp;{{status}}</p>
       </div>
+      <!--<p>{{debug}}</p>-->
     </ion-card-content>
   </ion-card>
 </ion-content>

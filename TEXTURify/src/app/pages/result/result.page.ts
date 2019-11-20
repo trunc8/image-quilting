@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ActionSheetController, ToastController, Platform, LoadingController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
+import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
+import { File } from '@ionic-native/file/ngx';
+
 
 @Component({
   selector: 'app-result',
@@ -12,7 +15,9 @@ export class ResultPage implements OnInit {
   resultImagePath= "";
   savingInProgress = false;
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute, private toastController: ToastController) { }
+  constructor(private transfer: FileTransfer, private file: File, private router: Router, private activatedRoute: ActivatedRoute, private toastController: ToastController) { }
+
+  fileTransfer: FileTransferObject = this.transfer.create();
 
   ngOnInit() {
     this.resultImagePath = this.activatedRoute.snapshot.paramMap.get('img_path');
@@ -32,10 +37,15 @@ export class ResultPage implements OnInit {
     // Save Image
     this.savingInProgress = true;
     // this.presentToast("Saving Image. Please wait...");
-    
+    this.fileTransfer.download(this.resultImagePath, this.file.dataDirectory + "saved_img.png").then((entry) => {
+      console.log("Download Complete: " + entry);
+      this.presentToast("Image Saved!");
+    }, (error) => {
+      console.log(error);
+    });
 
     // Now send the image to backend & wait for result.
-    await this.delay(2000);
+    // await this.delay(2000);
     this.savingInProgress = false;
     this.router.navigateByUrl("/home");
 

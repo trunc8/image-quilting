@@ -17,17 +17,61 @@
     </ion-card-header>
 
     <ion-card-content>
-      <ion-button expand="block" color="dark" (click)="selectImage('texture')">Upload Texture Image</ion-button>
+      <div class="uploadbtn">
+        <span class="uploadLabel">Upload Texture Image: </span>
+        <input
+          id="uploadBtn1"
+          type="file"
+          class="upload"
+          (change)="uploadFile($event.target.files, 'texture')"
+        />
+      </div>
+      <!--<ion-button expand="block" color="dark" (click)="selectImage('texture')">Upload Texture Image</ion-button>-->
       <br>
-      <img [src]="textureImg.croppedImagepath" *ngIf="textureImg.croppedImagepath"/>
-      <br *ngIf="textureImg.croppedImagepath">
-      <ion-button expand="block" color="dark" (click)="selectImage('target')">Upload Target Image</ion-button>
+      <p *ngIf="isTextureLoading" align="center"><ion-spinner name="circles" color="dark"></ion-spinner> &nbsp;&nbsp;{{status}}</p>
+      <img [src]="textureImage.image_url" *ngIf="textureImage.image_url"/>
+      <br *ngIf="textureImage.image_url">
+      <div class="uploadbtn">
+        <span class="uploadLabel">Upload Target Image: </span>
+        <input
+          id="uploadBtn2"
+          type="file"
+          class="upload"
+          (change)="uploadFile($event.target.files, 'target')"
+        />
+      </div>
+      <!--<ion-button expand="block" color="dark" (click)="selectImage('target')">Upload Target Image</ion-button>-->
+      <br *ngIf="targetImage.image_url">
+      <p *ngIf="isTargetLoading" align="center"><ion-spinner name="circles" color="dark"></ion-spinner> &nbsp;&nbsp;{{status}}</p>
+      <img [src]="targetImage.image_url" *ngIf="targetImage.image_url"/>
       <br>
-      <img [src]="targetImg.croppedImagepath" *ngIf="targetImg.croppedImagepath"/>
+      <div *ngIf="targetImage.image_url && targetImage.image_url">
+        <span><h2 align="center">Show Advanced Options <ion-icon *ngIf="!showAdvanced" name="arrow-dropdown-circle" (click)="setShowAdvanced(true)"></ion-icon> <ion-icon *ngIf="showAdvanced" name="arrow-dropup-circle" (click)="setShowAdvanced(false)"></ion-icon></h2></span>
+        <div *ngIf="showAdvanced">
+          <ion-item>
+            <ion-label position="stacked">Block Size</ion-label>
+            <ion-input type="number" value="10" (ionChange)="blockSizeChanged($event)"></ion-input>
+          </ion-item>
+          <br>
+          <ion-item>
+            <ion-label position="stacked">Overlap Size</ion-label>
+            <ion-input type="number" value="5" (ionChange)="overlapSizeChanged($event)"></ion-input>
+          </ion-item>
+          <br>
+          <ion-item>
+            <ion-label position="stacked">Tolerance</ion-label>
+            <ion-input type="number" value="0.1" (ionChange)="toleranceChanged($event)"></ion-input>
+          </ion-item>
+          
+          <br>
+          
+        </div>
+
+      </div>
       <br>
-      <ion-button expand="block" *ngIf="targetImg.croppedImagepath && textureImg.croppedImagepath" color="dark" (click)="submit()">Transfer Texture   &nbsp;&nbsp;<ion-icon name="shuffle"></ion-icon></ion-button>
+      <ion-button expand="block" color="dark" (click)="submit()">Transfer Texture   &nbsp;&nbsp;<ion-icon name="shuffle"></ion-icon></ion-button>
       <br>
-      <p *ngIf="transferInProgress" align="center"><ion-spinner name="circles" color="dark"></ion-spinner> &nbsp;&nbsp; Transferring Texture. Please wait...</p>
+      <p *ngIf="transferInProgress" align="center"><ion-spinner name="circles" color="dark"></ion-spinner> &nbsp;&nbsp;{{status}}</p>
     </ion-card-content>
   </ion-card>
 </ion-content>

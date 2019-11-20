@@ -14,10 +14,10 @@ def Construct(imgArray, blockSize, overlapSize, outSizeX, outSizeY, tolerance):
     #final image is initialised with elemnts as -1.
     finalImage = np.ones([outSizeX, outSizeY, c])*-1
     finalImage[0:blockSize[0],0:blockSize[1],:] = imgArray[0:blockSize[0],0:blockSize[1],:]
-    noOfBlocksInRow = 2 + np.ceil((outSizeX - 2*(blockSize[1] - overlapSize))/(blockSize[1] - 2*overlapSize))
-    noOfBlocksInCol = 2 + np.ceil((outSizeY - 2*(blockSize[0] - overlapSize))/(blockSize[0] - 2*overlapSize))
-    for i in range(int(noOfBlocksInRow)-1):
-        for j in range(int(noOfBlocksInCol)-1):
+    noOfBlocksInRow = 1 + np.ceil((outSizeX - blockSize[1])*1.0/(blockSize[1] - overlapSize))
+    noOfBlocksInCol = 1 + np.ceil((outSizeY - blockSize[0])*1.0/(blockSize[0] - overlapSize))
+    for i in range(int(noOfBlocksInRow)):
+        for j in range(int(noOfBlocksInCol)):
             if i == 0 and j == 0:
                 continue
             #start and end location of block to be filled is initialised
@@ -91,9 +91,3 @@ def SaveImage( npdata, outfilename ) :
     print(npdata.shape)
     img = Image.fromarray(npdata.astype('uint8')).convert('RGB')
     img.save( outfilename )
-
-#data = LoadImage('../images/t2.png')
-#data = np.array(data)
-#print(data.shape)
-#out = Construct(data, [50,50], 20, 300, 400, 0.1)
-#SaveImage(out,'../images/out.png')
