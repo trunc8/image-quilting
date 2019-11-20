@@ -25,7 +25,19 @@ export class TextureTransferPage implements OnInit {
     croppedImagepath: ""
   }
 
+  targetImgOptions = {
+    scale: 4,
+    // width: 1000,
+    blockSize: 10,
+    overlapSize: 5,
+    tolerance: 0.1
+  };
+
+  showAdvanced = false;
+
   transferInProgress = false;
+
+  status = "";
 
   constructor(private router:Router, private crop: Crop, private camera: Camera, public actionSheetController: ActionSheetController, private file: File, private toastController: ToastController) { }
 
@@ -125,11 +137,35 @@ export class TextureTransferPage implements OnInit {
     });
   }
 
+  setShowAdvanced(b){
+    this.showAdvanced = b;
+  }
+
+  blockSizeChanged(e){
+    console.log(parseInt(e.detail.value));
+    this.targetImgOptions.blockSize = parseInt(e.detail.value);
+  }
+  
+  overlapSizeChanged(e){
+    console.log(parseInt(e.detail.value));
+    this.targetImgOptions.overlapSize = parseInt(e.detail.value);
+  }
+
+  toleranceChanged(e){
+    console.log(parseFloat(e.detail.value));
+    this.targetImgOptions.tolerance = parseFloat(e.detail.value);
+  }
+
   async submit() {
     // this.presentToast("Transfering Texture. Please wait...");
+    this.status = "Uploading image to firebase..."
     this.transferInProgress = true;
 
+    // Upload image to firebase server
+
+
     // Now send the image to backend & wait for result.
+    this.status = "Transferring texture. Please wait..."
     await this.delay(2000);
     this.transferInProgress = false;
     // On obtaining result, go to result page
