@@ -25,13 +25,6 @@ export class TextureTransferPage implements OnInit {
   isTextureLoading = false;
   isTargetLoading = false;
 
-  textureImg = {
-    croppedImagepath: ""
-  };
-
-  targetImg = {
-    croppedImagepath: ""
-  }
 
   textureImgDataLocal = {
     croppedImagepath: "",
@@ -183,7 +176,7 @@ export class TextureTransferPage implements OnInit {
     await this.delay(2000);
     this.transferInProgress = false;
     // On obtaining result, go to result page
-    this.router.navigate(['/result', this.textureImg.croppedImagepath])
+    this.router.navigate(['/result', this.textureImage.image_url])
 
   }
 
@@ -191,87 +184,4 @@ export class TextureTransferPage implements OnInit {
     return new Promise( resolve => setTimeout(resolve, ms) );
   }
 
-  // pickImage(sourceType, imgType) {
-  //   console.log("Uploading Image...");
-  //   this.options = {
-  //     // maximumImagesCount: 1,
-  //     quality: 100,
-  //     sourceType: sourceType,
-  //     destinationType: this.camera.DestinationType.FILE_URI,
-  //     encodingType: this.camera.EncodingType.JPEG,
-  //     mediaType: this.camera.MediaType.PICTURE
-  //   };
-
-  //   this.camera.getPicture(this.options).then((imageData) => {
-  //     // imageData is either a base64 encoded string or a file URI
-  //     // If it's base64 (DATA_URL):
-  //     // let base64Image = 'data:image/jpeg;base64,' + imageData;
-  //     this.cropImage(imageData, imgType)
-  //     }, (err) => {
-  //     // Handle error
-  //     });
-  // }
-
-  // async selectImage(imgType) {
-  //   console.log(imgType);
-  //   const actionSheet = await this.actionSheetController.create({
-  //     header: "Select Image source",
-  //     buttons: [{
-  //       text: 'Load from Library',
-  //       handler: () => {
-  //         this.pickImage(this.camera.PictureSourceType.PHOTOLIBRARY, imgType);
-  //       }
-  //     },
-  //     {
-  //       text: 'Use Camera',
-  //       handler: () => {
-  //         this.pickImage(this.camera.PictureSourceType.CAMERA, imgType);
-  //       }
-  //     },
-  //     {
-  //       text: 'Cancel',
-  //       role: 'cancel'
-  //     }
-  //     ]
-  //   });
-  //   await actionSheet.present();
-  // }
-
-  // cropImage(fileUrl, imgType) {
-  //   this.crop.crop(fileUrl, { quality: 90 })
-  //     .then(
-  //       newPath => {
-  //         this.showCroppedImage(newPath.split('?')[0], imgType);
-  //       },
-  //       error => {
-  //         alert('Error cropping image' + error);
-  //       }
-  //     );
-  // }
-
-  // showCroppedImage(ImagePath, imgType) {
-  //   this.isLoading = true;
-  //   var copyPath = ImagePath;
-  //   var splitPath = copyPath.split('/');
-  //   var imageName = splitPath[splitPath.length - 1];
-  //   var filePath = ImagePath.split(imageName)[0];
-
-  //   this.file.readAsDataURL(filePath, imageName).then(base64 => {
-  //     if(imgType === "texture"){
-  //       this.textureImg.croppedImagepath = base64;
-  //       // this.presentToast(this.textureImg.croppedImagepath);
-  //     }
-  //     if(imgType === "target"){
-  //       this.targetImg.croppedImagepath = base64;
-  //       // this.presentToast(this.targetImg.croppedImagepath);
-  //     }
-  //     // else{
-  //     //   this.presentToast("Invalid Image Type!");
-  //     // }
-  //     this.isLoading = false;
-  //   }, error => {
-  //     alert('Error in showing image' + error);
-  //     this.isLoading = false;
-  //   });
-  // }
 }
