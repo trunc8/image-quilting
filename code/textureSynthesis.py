@@ -2,7 +2,7 @@ import numpy as np
 from PIL import Image
 from minimumCostPathFunc import minimumCostMask 
 
-def Construct(imgArray, blockSize, overlapSize, outSizeX, outSizeY):
+def Construct(imgArray, blockSize, overlapSize, outSizeX, outSizeY, tolerance):
     imgArray = np.array(imgArray)
     [m,n,c] = imgArray.shape
     blocks = []
@@ -28,7 +28,7 @@ def Construct(imgArray, blockSize, overlapSize, outSizeX, outSizeY):
 
             toFill = finalImage[startX:endX,startY:endY,:]
             #MatchBlock returns the best suited block
-            matchBlock = MatchBlock(blocks, toFill, blockSize)
+            matchBlock = MatchBlock(blocks, toFill, blockSize, tolerance)
             B1EndY = startY+overlapSize-1
             B1StartY = B1EndY-(matchBlock.shape[1])+1
             B1EndX = startX+overlapSize-1
@@ -51,8 +51,8 @@ def Construct(imgArray, blockSize, overlapSize, outSizeX, outSizeY):
                 mask = minimumCostMask(matchBlock[:,:,0],B1[:,:,0],B2[:,:,0],overlapType,overlapSize)
             mask = np.repeat(np.expand_dims(mask,axis=2),3,axis=2)
             maskNegate = mask==0
-            finalImage[startX:endX,startY:endY,:] = maskNegate*finalImage[startX:endX,startY:endY,:]
-            finalImage[startX:endX,startY:endY,:] = matchBlock*mask+finalImage[startX:endX,startY:endY,:]
+            finalImage[startX:endX,startY:endY,:] = maskNegate*toFill
+            finalImage[startX:endX,startY:endY,:] = matchBlock*mask+toFill
             if endY == outSizeY:
                 break
         if endX == outSizeX:
@@ -60,22 +60,27 @@ def Construct(imgArray, blockSize, overlapSize, outSizeX, outSizeY):
     return finalImage
 
 def SSDError(Bi, toFill): 
-    [m,n,p] = toFill.shape
-    #blocks to be searched are cropped to the size of empty location
-    Bi = Bi[0:m,0:n,0:p]
-    #Locations where toFill+1 gives 0 are those where any data is not stored yet. Only those which give greater than 1 are compared for best fit.
     error = np.sum(((toFill+0.99)>0.1)*(Bi - toFill)*(Bi - toFill))
-    return [error,Bi]
+    return [error]
 
-def MatchBlock(blocks, toFill, blockSize):
-    [minError,bestBlock] = SSDError(blocks[0,:,:,:], toFill)
+def MatchBlock(blocks, toFill, blockSize, tolerance):   
+    error = []
+    [m,n,p] = toFill.shape
+    bestBlocks = []
+    count = 0
     for i in range(blocks.shape[0]):
-        [error,Bi] = SSDError(blocks[i,:,:,:], toFill)
-        if minError > error:
-            bestBlock = Bi
-            minError = error
-    return bestBlock
-
+        #blocks to be searched are cropped to the size of empty location
+        Bi = blocks[i,:,:,:]
+        Bi = Bi[0:m,0:n,0:p]
+        error.append(SSDError(Bi, toFill))
+    minVal = np.min(error)
+    for i in range(blocks.shape[0]):
+        if error[i] <= (1.0+tolerance)*minVal:
+            block = blocks[i,:,:,:]
+            bestBlocks.append(block[0:m,0:n,0:p])
+            count = count+1
+    c = np.random.randint(count)
+    return bestBlocks[c]
 
 def LoadImage( infilename ) :
     img = Image.open(infilename).convert('RGB')
@@ -87,14 +92,8 @@ def SaveImage( npdata, outfilename ) :
     img = Image.fromarray(npdata.astype('uint8')).convert('RGB')
     img.save( outfilename )
 
-data = LoadImage('t2.png')
-data = np.array(data)
-print(data.shape)
-out = Construct(data, [50,50], 20, 300, 400)
-SaveImage(out,'out.png')
-
-
-
-
-
-
+#data = LoadImage('../images/t2.png')
+#data = np.array(data)
+#print(data.shape)
+#out = Construct(data, [50,50], 20, 300, 400, 0.1)
+#SaveImage(out,'../images/out.png')
