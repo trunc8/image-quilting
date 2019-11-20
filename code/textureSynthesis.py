@@ -79,11 +79,11 @@ def SaveImage( npdata, outfilename ) :
     img = Image.fromarray(npdata.astype('uint8')).convert('RGB')
     img.save( outfilename )
 
-data = LoadImage('t8.png')
-data = np.array(data)
-print(data.shape)
-out = Construct(data, [100,100], 20, 400, 400)
-SaveImage(out,'out.png')
+# data = LoadImage('t8.png')
+# data = np.array(data)
+# print(data.shape)
+# out = Construct(data, [100,100], 20, 400, 400)
+# SaveImage(out,'out.png')
 
 
 

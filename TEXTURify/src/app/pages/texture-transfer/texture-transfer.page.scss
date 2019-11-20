@@ -1,0 +1,22 @@
+.upload{
+    position: relative;
+    display: inline-block;
+    border: 1px solid #999;
+    border-radius: 3px;
+    text-align: center;
+    transition: background-color ease-in-out 150ms;
+    cursor: pointer;
+    overflow: hidden;
+    padding: 5px 8px;
+    outline: none;
+ 
+}
+
+.uploadLabel{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    font-weight: 600;
+    font-size: 15px;
+    padding-bottom: 10px;
+}
