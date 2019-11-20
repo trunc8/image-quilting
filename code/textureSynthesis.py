@@ -25,6 +25,7 @@ def Construct(imgArray, blockSize, overlapSize, outSizeX, outSizeY):
             startY = int(j*(blockSize[1] - overlapSize))
             endX = int(min(startX+blockSize[0],outSizeX))
             endY = int(min(startY+blockSize[1],outSizeY))
+
             toFill = finalImage[startX:endX,startY:endY,:]
             #MatchBlock returns the best suited block
             matchBlock = MatchBlock(blocks, toFill, blockSize)
@@ -35,20 +36,27 @@ def Construct(imgArray, blockSize, overlapSize, outSizeX, outSizeY):
             if i == 0:      
                 overlapType = 'v'
                 B1 = finalImage[startX:endX,B1StartY:B1EndY+1,:]
+                #print(B1.shape,matchBlock.shape,'v',B1StartY,B1EndY,startX,startY)
                 mask = minimumCostMask(matchBlock[:,:,0],B1[:,:,0],0,overlapType,overlapSize)
             elif j == 0:          
                 overlapType = 'h'
                 B2 = finalImage[B1StartX:B1EndX+1, startY:endY, :]
+                #print(B2.shape,matchBlock.shape,B1StartX,B1EndY)
                 mask = minimumCostMask(matchBlock[:,:,0],0,B2[:,:,0],overlapType,overlapSize)
             else:
                 overlapType = 'b'
                 B1 = finalImage[startX:endX,B1StartY:B1EndY+1,:]
                 B2 = finalImage[B1StartX:B1EndX+1, startY:endY, :]
+                #print(B1.shape,B2.shape,matchBlock.shape)
                 mask = minimumCostMask(matchBlock[:,:,0],B1[:,:,0],B2[:,:,0],overlapType,overlapSize)
             mask = np.repeat(np.expand_dims(mask,axis=2),3,axis=2)
             maskNegate = mask==0
             finalImage[startX:endX,startY:endY,:] = maskNegate*finalImage[startX:endX,startY:endY,:]
             finalImage[startX:endX,startY:endY,:] = matchBlock*mask+finalImage[startX:endX,startY:endY,:]
+            if endY == outSizeY:
+                break
+        if endX == outSizeX:
+            break
     return finalImage
 
 def SSDError(Bi, toFill): 
@@ -79,10 +87,10 @@ def SaveImage( npdata, outfilename ) :
     img = Image.fromarray(npdata.astype('uint8')).convert('RGB')
     img.save( outfilename )
 
-data = LoadImage('t8.png')
+data = LoadImage('t2.png')
 data = np.array(data)
 print(data.shape)
-out = Construct(data, [100,100], 20, 400, 400)
+out = Construct(data, [50,50], 20, 300, 400)
 SaveImage(out,'out.png')
 
 
