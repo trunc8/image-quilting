@@ -2,7 +2,7 @@ import numpy as np
 from PIL import Image
 from minimumCostPathFunc import minimumCostMask 
 
-def Construct(imgArray, blockSize, overlapSize, outSizeX, outSizeY):
+def Construct(imgArray, blockSize, overlapSize, outSizeX, outSizeY, tolerance):
     imgArray = np.array(imgArray)
     [m,n,c] = imgArray.shape
     blocks = []
@@ -14,10 +14,10 @@ def Construct(imgArray, blockSize, overlapSize, outSizeX, outSizeY):
     #final image is initialised with elemnts as -1.
     finalImage = np.ones([outSizeX, outSizeY, c])*-1
     finalImage[0:blockSize[0],0:blockSize[1],:] = imgArray[0:blockSize[0],0:blockSize[1],:]
-    noOfBlocksInRow = 2 + np.ceil((outSizeX - 2*(blockSize[1] - overlapSize))/(blockSize[1] - 2*overlapSize))
-    noOfBlocksInCol = 2 + np.ceil((outSizeY - 2*(blockSize[0] - overlapSize))/(blockSize[0] - 2*overlapSize))
-    for i in range(int(noOfBlocksInRow)-1):
-        for j in range(int(noOfBlocksInCol)-1):
+    noOfBlocksInRow = 1 + np.ceil((outSizeX - blockSize[1])*1.0/(blockSize[1] - overlapSize))
+    noOfBlocksInCol = 1 + np.ceil((outSizeY - blockSize[0])*1.0/(blockSize[0] - overlapSize))
+    for i in range(int(noOfBlocksInRow)):
+        for j in range(int(noOfBlocksInCol)):
             if i == 0 and j == 0:
                 continue
             #start and end location of block to be filled is initialised
@@ -28,7 +28,7 @@ def Construct(imgArray, blockSize, overlapSize, outSizeX, outSizeY):
 
             toFill = finalImage[startX:endX,startY:endY,:]
             #MatchBlock returns the best suited block
-            matchBlock = MatchBlock(blocks, toFill, blockSize)
+            matchBlock = MatchBlock(blocks, toFill, blockSize, tolerance)
             B1EndY = startY+overlapSize-1
             B1StartY = B1EndY-(matchBlock.shape[1])+1
             B1EndX = startX+overlapSize-1
@@ -51,8 +51,8 @@ def Construct(imgArray, blockSize, overlapSize, outSizeX, outSizeY):
                 mask = minimumCostMask(matchBlock[:,:,0],B1[:,:,0],B2[:,:,0],overlapType,overlapSize)
             mask = np.repeat(np.expand_dims(mask,axis=2),3,axis=2)
             maskNegate = mask==0
-            finalImage[startX:endX,startY:endY,:] = maskNegate*finalImage[startX:endX,startY:endY,:]
-            finalImage[startX:endX,startY:endY,:] = matchBlock*mask+finalImage[startX:endX,startY:endY,:]
+            finalImage[startX:endX,startY:endY,:] = maskNegate*toFill
+            finalImage[startX:endX,startY:endY,:] = matchBlock*mask+toFill
             if endY == outSizeY:
                 break
         if endX == outSizeX:
@@ -60,22 +60,27 @@ def Construct(imgArray, blockSize, overlapSize, outSizeX, outSizeY):
     return finalImage
 
 def SSDError(Bi, toFill): 
-    [m,n,p] = toFill.shape
-    #blocks to be searched are cropped to the size of empty location
-    Bi = Bi[0:m,0:n,0:p]
-    #Locations where toFill+1 gives 0 are those where any data is not stored yet. Only those which give greater than 1 are compared for best fit.
     error = np.sum(((toFill+0.99)>0.1)*(Bi - toFill)*(Bi - toFill))
-    return [error,Bi]
+    return [error]
 
-def MatchBlock(blocks, toFill, blockSize):
-    [minError,bestBlock] = SSDError(blocks[0,:,:,:], toFill)
+def MatchBlock(blocks, toFill, blockSize, tolerance):   
+    error = []
+    [m,n,p] = toFill.shape
+    bestBlocks = []
+    count = 0
     for i in range(blocks.shape[0]):
-        [error,Bi] = SSDError(blocks[i,:,:,:], toFill)
-        if minError > error:
-            bestBlock = Bi
-            minError = error
-    return bestBlock
-
+        #blocks to be searched are cropped to the size of empty location
+        Bi = blocks[i,:,:,:]
+        Bi = Bi[0:m,0:n,0:p]
+        error.append(SSDError(Bi, toFill))
+    minVal = np.min(error)
+    for i in range(blocks.shape[0]):
+        if error[i] <= (1.0+tolerance)*minVal:
+            block = blocks[i,:,:,:]
+            bestBlocks.append(block[0:m,0:n,0:p])
+            count = count+1
+    c = np.random.randint(count)
+    return bestBlocks[c]
 
 def LoadImage( infilename ) :
     img = Image.open(infilename).convert('RGB')
@@ -86,17 +91,3 @@ def SaveImage( npdata, outfilename ) :
     print(npdata.shape)
     img = Image.fromarray(npdata.astype('uint8')).convert('RGB')
     img.save( outfilename )
-
-
-# data = LoadImage('t8.png')
-# data = np.array(data)
-# print(data.shape)
-# out = Construct(data, [100,100], 20, 400, 400)
-# SaveImage(out,'out.png')
-
-
-
-
-
-
-
