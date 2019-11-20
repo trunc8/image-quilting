@@ -7,7 +7,7 @@ import { Crop } from '@ionic-native/crop/ngx';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
+import { AngularFireStorage} from '@angular/fire/storage';
 // import { Storage } from '@ionic/storage';
 // import { FilePath } from '@ionic-native/file-path/ngx';
 // import { ImagePicker } from '@ionic-native/image-picker';
@@ -29,6 +29,7 @@ export class TextureSynthesisPage implements OnInit {
 
   isLoading = false;
   options: any;
+  
   imgDataLocal = {
     croppedImagepath: "",
     imgFilePath: "",
@@ -97,17 +98,15 @@ export class TextureSynthesisPage implements OnInit {
       result.task.then(a => {
         ref.getDownloadURL().subscribe(a => {
           console.log(a);
-          
           this.image.image_url = a;
           this.isLoading = false;
           this.afs.collection('Image').doc(this.image.id).set(this.image);
           // this.loading = false;
         });
 
-        
       });
     }, error => {
-      alert("Error: " + error);
+      this.presentToast("Error: " + error);
     }
 
   }
