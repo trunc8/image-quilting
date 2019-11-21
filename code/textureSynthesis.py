@@ -13,7 +13,8 @@ def Construct(imgArray, blockSize, overlapSize, outSizeX, outSizeY, tolerance):
     blocks = np.array(blocks)
     #final image is initialised with elemnts as -1.
     finalImage = np.ones([outSizeX, outSizeY, c])*-1
-    finalImage[0:blockSize[0],0:blockSize[1],:] = imgArray[0:blockSize[0],0:blockSize[1],:]
+    # finalImage[0:blockSize[0],0:blockSize[1],:] = imgArray[0:blockSize[0],0:blockSize[1],:]
+    finalImage[0:blockSize[0],0:blockSize[1],:] = blocks[np.random.randint(len(blocks))]
     noOfBlocksInRow = 1 + np.ceil((outSizeX - blockSize[1])*1.0/(blockSize[1] - overlapSize))
     noOfBlocksInCol = 1 + np.ceil((outSizeY - blockSize[0])*1.0/(blockSize[0] - overlapSize))
     for i in range(int(noOfBlocksInRow)):
@@ -53,9 +54,14 @@ def Construct(imgArray, blockSize, overlapSize, outSizeX, outSizeY, tolerance):
             maskNegate = mask==0
             finalImage[startX:endX,startY:endY,:] = maskNegate*toFill
             finalImage[startX:endX,startY:endY,:] = matchBlock*mask+toFill
+            completion = 100.0/noOfBlocksInRow*(i + j*1.0/noOfBlocksInCol);
+
+            print("{0:.2f}% complete...".format(completion), end="\r", flush=True)
             if endY == outSizeY:
                 break
+
         if endX == outSizeX:
+            print("100% complete!\n")
             break
     return finalImage
 
@@ -67,27 +73,25 @@ def MatchBlock(blocks, toFill, blockSize, tolerance):
     error = []
     [m,n,p] = toFill.shape
     bestBlocks = []
-    count = 0
+    # count = 0
     for i in range(blocks.shape[0]):
         #blocks to be searched are cropped to the size of empty location
         Bi = blocks[i,:,:,:]
         Bi = Bi[0:m,0:n,0:p]
         error.append(SSDError(Bi, toFill))
     minVal = np.min(error)
-    for i in range(blocks.shape[0]):
-        if error[i] <= (1.0+tolerance)*minVal:
-            block = blocks[i,:,:,:]
-            bestBlocks.append(block[0:m,0:n,0:p])
-            count = count+1
-    c = np.random.randint(count)
+    bestBlocks = [block[:m, :n, :p] for i, block in enumerate(blocks) if error[i] <= (1.0+tolerance)*minVal]
+    # for i in range(blocks.shape[0]):
+    #     if error[i] <= (1.0+tolerance)*minVal:
+    #         block = blocks[i,:,:,:]
+    #         bestBlocks.append(block[0:m,0:n,0:p])
+    #         count = count+1
+    c = np.random.randint(len(bestBlocks))
     return bestBlocks[c]
 
-def LoadImage( infilename ) :
-    img = Image.open(infilename).convert('RGB')
-    data = np.asarray(img)
-    return data
 
-def SaveImage( npdata, outfilename ) :
-    print(npdata.shape)
-    img = Image.fromarray(npdata.astype('uint8')).convert('RGB')
-    img.save( outfilename )
+
+# def SaveImage( npdata, outfilename ) :
+#     print(npdata.shape)
+#     img = Image.fromarray(npdata.astype('uint8')).convert('RGB')
+#     img.save( outfilename )
