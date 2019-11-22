@@ -59,6 +59,11 @@
           </ion-item>
           <br>
           <ion-item>
+            <ion-label position="stacked">Alpha</ion-label>
+            <ion-input type="number" value="0.2" (ionChange)="alphaChanged($event)"></ion-input>
+          </ion-item>
+          <br>
+          <ion-item>
             <ion-label position="stacked">Tolerance</ion-label>
             <ion-input type="number" value="0.1" (ionChange)="toleranceChanged($event)"></ion-input>
           </ion-item>

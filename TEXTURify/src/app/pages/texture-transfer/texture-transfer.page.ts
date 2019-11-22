@@ -50,10 +50,10 @@ export class TextureTransferPage implements OnInit {
   };
 
   targetImgOptions = {
-    scale: 4,
-    blockSize: 10,
-    overlapSize: 5,
-    tolerance: 0.1
+    blockSize: 80,
+    overlapSize: 20,
+    tolerance: 0.1,
+    alpha: 0.2
   };
 
   showAdvanced = false;
@@ -163,6 +163,11 @@ export class TextureTransferPage implements OnInit {
     this.targetImgOptions.overlapSize = parseInt(e.detail.value);
   }
 
+  alphaChanged(e){
+    console.log(parseFloat(e.detail.value));
+    this.targetImgOptions.alpha = parseFloat(e.detail.value);
+  }
+
   toleranceChanged(e){
     console.log(parseFloat(e.detail.value));
     this.targetImgOptions.tolerance = parseFloat(e.detail.value);
@@ -179,7 +184,8 @@ export class TextureTransferPage implements OnInit {
       "target_img_url": this.targetImage.image_url,
       "blockSize": this.targetImgOptions.blockSize,
       "overlapSize": this.targetImgOptions.overlapSize,
-      "tolerance": this.targetImgOptions.tolerance
+      "tolerance": this.targetImgOptions.tolerance,
+      "alpha": this.targetImgOptions.alpha
     };
 
 

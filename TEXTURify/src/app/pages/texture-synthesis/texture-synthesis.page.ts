@@ -41,9 +41,9 @@ export class TextureSynthesisPage implements OnInit {
   synthesisInProgress = false;
 
   targetImgOptions = {
-    scale: 4,
-    blockSize: 10,
-    overlapSize: 5,
+    scale: 2,
+    blockSize: 80,
+    overlapSize: 20,
     tolerance: 0.1
   };
 
