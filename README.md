@@ -1,6 +1,6 @@
 # Image Quilting for Texture Synthesis & Transfer
 
-### Course Project for CS663 by Siddharth Saha, Tezan Sahu & Saavi Yadav
+### Course Project for CS663
 
 ***
 
