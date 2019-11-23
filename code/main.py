@@ -46,7 +46,7 @@ def synthesis(args):
         # Save generated image if required
         img_name = args.img_path.split("/")[-1].split(".")[0]
         img_to_save = Image.fromarray(new_img.astype('uint8'), 'RGB')
-        img_to_save.save("../results/synthesis/" + img_name + "_b=" + str(args.block_size) + "_o=" + str(args.overlap) + "_t=" + str(args.tolerance) + ".png")
+        img_to_save.save("../results/synthesis/" + img_name + "_b=" + str(args.block_size) + "_o=" + str(args.overlap) + "_t=" + str(args.tolerance).replace(".", "_") + ".png")
     
     except Exception as e:
         print("Error: ", e)
@@ -68,7 +68,7 @@ def transfer(args):
         texture_img_name = args.texture_img_path.split("/")[-1].split(".")[0]
         target_img_name = args.target_img_path.split("/")[-1].split(".")[0]
         img_to_save = Image.fromarray(new_img.astype('uint8'), 'RGB')
-        img_to_save.save("../results/transfer/" + texture_img_name + "_" + target_img_name + "_b=" + str(args.block_size) + "_o=" + str(args.overlap) + "_a=" + str(args.alpha).replace(".", "_") + "_t=" + str(args.tolerance) + ".png")
+        img_to_save.save("../results/transfer/" + texture_img_name + "_" + target_img_name + "_b=" + str(args.block_size) + "_o=" + str(args.overlap) + "_a=" + str(args.alpha).replace(".", "_") + "_t=" + str(args.tolerance).replace(".", "_") + ".png")
     except Exception as e:
         print("Error: ", e)
         sys.exit(1)
