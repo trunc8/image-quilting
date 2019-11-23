@@ -1,6 +1,6 @@
 # Image Quilting for Texture Synthesis & Transfer
 
-### Course Project for CS663 by Siddharth Saha, Tezan Sahu & Saavi Yadav
+### Course Project for CS663
 
 ***
 
@@ -46,6 +46,7 @@ Disable CORS on your browser (using some extension) and start playing with the a
 | ![](https://raw.githubusercontent.com/tezansahu/ImageQuilting/master/images/t17.jpeg) | ![](https://raw.githubusercontent.com/tezansahu/ImageQuilting/master/results/synthesis/t17_b=50_o=20_t=0_1.png) |
 | ![](https://raw.githubusercontent.com/tezansahu/ImageQuilting/master/images/t14.jpg) | ![](https://raw.githubusercontent.com/tezansahu/ImageQuilting/master/results/synthesis/t14_b=50_o=20_t=0_1.png) |
 | ![](https://raw.githubusercontent.com/tezansahu/ImageQuilting/master/images/t1.png) | ![](https://raw.githubusercontent.com/tezansahu/ImageQuilting/master/results/synthesis/t1_b=50_o=20.png) |
+| ![](https://raw.githubusercontent.com/tezansahu/ImageQuilting/master/images/t16.png) | ![](https://raw.githubusercontent.com/tezansahu/ImageQuilting/master/results/synthesis/t16_b=50_o=20_t=0_1.png) |
 
 
 #### Some Results for Texture Transfer
@@ -58,5 +59,5 @@ Disable CORS on your browser (using some extension) and start playing with the a
 | ![](https://raw.githubusercontent.com/tezansahu/ImageQuilting/master/images/tendulkar.jpg) | ![](https://raw.githubusercontent.com/tezansahu/ImageQuilting/master/images/scribble.png) | ![](https://raw.github.com/tezansahu/ImageQuilting/master/results/transfer/scribble_tendulkar_b=20_o=10_a=0_2_t=0_05.png)|
 
 ***
-<p align='center'>Created with :heart: by <a href="https://www.linkedin.com/in/tezan-sahu/">Tezan Sahu</a>, <a href="https://www.linkedin.com/in/sahasiddharth611/">Siddharth Sahu</a> & <a href="https://www.linkedin.com/in/saavi-yadav-7ab61a151/">Saavi Yadav</a></p>
+<p align='center'>Created with :heart: by <a href="https://www.linkedin.com/in/tezan-sahu/">Tezan Sahu</a>, <a href="https://www.linkedin.com/in/sahasiddharth611/">Siddharth Saha</a> & <a href="https://www.linkedin.com/in/saavi-yadav-7ab61a151/">Saavi Yadav</a></p>
 
