@@ -70,14 +70,15 @@ def read_root():
 def texture_synthesis(synthesis: Synthesis):
     # Get image from URL
     response = requests.get(synthesis.img_url)
-    img = np.asarray(Image.open(BytesIO(response.content)))
+    img = np.asarray(Image.open(BytesIO(response.content)).convert('RGB'))
+    img_size = img.shape
     new_h, new_w = int(synthesis.scale * img_size[0]), int(synthesis.scale * img_size[1])
 
     # Run the synthesis algorithm
-    newImg = textureSynthesis.Construct(img, [synthesis.block_size, synthesis.block_size], synthesis.overlap, new_h, new_w, synthesis.tolerance)
+    newImg = textureSynthesis.Construct(img, [synthesis.blockSize, synthesis.blockSize], synthesis.overlapSize, new_h, new_w, synthesis.tolerance)
 
     # Save the image, upload it to Firebase & send the URL back
-    img_to_save = Image.fromarray(new_img.astype('uint8'), 'RGB')
+    img_to_save = Image.fromarray(newImg.astype('uint8'), 'RGB')
     img_path = "./results_synthesis/result" + str(np.random.randint(0, 1000)) + ".png"
     img_to_save.save(img_path)
     return saveImgAndSend(img_path)
@@ -88,16 +89,16 @@ def texture_synthesis(synthesis: Synthesis):
 def texture_transfer(transfer: Transfer):
     # Get image from URL
     response = requests.get(transfer.texture_img_url)
-    texture_img = np.asarray(Image.open(BytesIO(response.content)))
+    texture_img = np.asarray(Image.open(BytesIO(response.content)).convert('RGB'))
     response = requests.get(transfer.target_img_url)
     target_img = np.asarray(Image.open(BytesIO(response.content)))
     
 
     # Run the synthesis algorithm
-    newImg = textureTransfer.Construct(texture_img, target_img, [transfer.block_size, transfer.block_size], transfer.overlap, transfer.alpha, transfer.tolerance)
+    newImg = textureTransfer.Construct(texture_img, target_img, [transfer.blockSize, transfer.blockSize], transfer.overlapSize, transfer.alpha, transfer.tolerance)
 
     # Save the image, upload it to Firebase & send the URL back
-    img_to_save = Image.fromarray(new_img.astype('uint8'), 'RGB')
+    img_to_save = Image.fromarray(newImg.astype('uint8'), 'RGB')
     img_path = "./results_transfer/result" + str(np.random.randint(0, 1000)) + ".png"
     img_to_save.save(img_path)
     return saveImgAndSend(img_path)

@@ -29,3 +29,6 @@ npm-debug.log*
 /platforms
 /plugins
 /www
+*/texturify-57a0e-firebase-adminsdk-fdaus-84283c9c07.json
+server/results_synthesis
+server/results_transfer

@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireStorage} from '@angular/fire/storage';
 import { headersToString } from 'selenium-webdriver/http';
+import { stringify } from '@angular/compiler/src/util';
 
 export interface Image {
   id: string;
@@ -199,6 +200,10 @@ export class TextureTransferPage implements OnInit {
       // On obtaining result, go to result page
       this.transferInProgress = false;
       this.router.navigate(['/result', response])
+    }, (error)=> {
+      this.presentToast(stringify(error));
+      console.log(error);
+      this.transferInProgress=false;
     });
     // await this.delay(2000);
     // this.transferInProgress = false;
