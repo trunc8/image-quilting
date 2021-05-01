@@ -1,6 +1,6 @@
 pydantic==0.32.2
 starlette==0.12.8
-uvicorn==0.9.0
+uvicorn==0.11.7
 uvloop==0.13.0
 email-validator==1.0.5
 fastapi==0.38.1
