@@ -10,5 +10,5 @@ gcloud==0.18.3
 sseclient==0.0.24
 pycryptodome==3.6.6
 requests-toolbelt==0.9.1
-Pillow==6.2.1
+Pillow==8.1.1
 numpy==1.17.4
